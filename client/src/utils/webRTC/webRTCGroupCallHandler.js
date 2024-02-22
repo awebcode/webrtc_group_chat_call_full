@@ -6,15 +6,17 @@ let myPeer;
 let myPeerId;
 let groupCallRoomId;
 let groupCallHost = false;
-const peerServerUrl =
-  process.env.NODE_ENV === "production"
-    ? "https://webrtc-group-call-chat.onrender.com/peerjs"
-    : "http://localhost:5000/peerjs";
+
 
 
 
 export const connectWithMyPeer = () => {
- myPeer = new window.Peer(undefined,peerServerUrl);
+ myPeer = new window.Peer(undefined, {
+   path: "/peerjs",
+   host: "/",
+   port: process.env.NODE_ENV === "production" ? 443 : 5000, // Assuming default ports for production and development
+   secure: process.env.NODE_ENV === "production", // Use secure connection in production
+ });
 
   myPeer.on('open', (id) => {
     console.log('succesfully connected with peer server');
