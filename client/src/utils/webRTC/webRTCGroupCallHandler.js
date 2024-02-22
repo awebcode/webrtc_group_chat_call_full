@@ -1,5 +1,6 @@
 import * as wss from "../wssConnection/wssConnection";
 import store from "../../store/store";
+import {Peer}from "peerjs"
 import {
   setGroupCallActive,
   setCallState,
@@ -17,7 +18,7 @@ console.log({
   port: typeof window !== "undefined" && window.location.port,
 });
 export const connectWithMyPeer = () => {
-  myPeer = new window.Peer(undefined, {
+  myPeer = new Peer( {
     path: "/peerjs",
     host: "/",
     // port: process.env.NODE_ENV === "production" ? 10000 : 5000, // Assuming default ports for production and development
