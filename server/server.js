@@ -21,7 +21,7 @@ groupCallHandler.createPeerServerListeners(peerServer);
 
 const io = socket(server, {
   cors: {
-    origin: ["http://localhost:3000", "https://webrtc-group-call-chat.onrender.com"],
+    origin: "*",
     methods: ["GET", "POST"],
   },
 });

@@ -1,33 +1,42 @@
-import * as wss from '../wssConnection/wssConnection';
-import store from '../../store/store';
-import { setGroupCallActive, setCallState, callStates, setGroupCallIncomingStreams, clearGroupCallData } from '../../store/actions/callActions';
+import * as wss from "../wssConnection/wssConnection";
+import store from "../../store/store";
+import {
+  setGroupCallActive,
+  setCallState,
+  callStates,
+  setGroupCallIncomingStreams,
+  clearGroupCallData,
+} from "../../store/actions/callActions";
 
 let myPeer;
 let myPeerId;
 let groupCallRoomId;
 let groupCallHost = false;
-
-
-
-
+console.log({
+  host: typeof window !== "undefined" && window.location.host,
+  port: typeof window !== "undefined" && window.location.port,
+});
 export const connectWithMyPeer = () => {
- myPeer = new window.Peer(undefined, {
-   path: "/peerjs",
-   host: "/",
-   port: process.env.NODE_ENV === "production" ?typeof window!=="undefined"&& window.location.port: 5000, // Assuming default ports for production and development
-   secure: process.env.NODE_ENV === "production", // Use secure connection in production
- });
+  myPeer = new window.Peer(undefined, {
+    path: "/peerjs",
+    host: typeof window !== "undefined" && window.location.host,
+    port:
+      process.env.NODE_ENV === "production"
+        ? typeof window !== "undefined" && window.location.port
+        : 5000, // Assuming default ports for production and development
+    secure: process.env.NODE_ENV === "production", // Use secure connection in production
+  });
 
-  myPeer.on('open', (id) => {
-    console.log('succesfully connected with peer server');
+  myPeer.on("open", (id) => {
+    console.log("succesfully connected with peer server");
     myPeerId = id;
   });
 
-  myPeer.on('call', call => {
+  myPeer.on("call", (call) => {
     call.answer(store.getState().call.localStream);
-    call.on('stream', incomingStream => {
+    call.on("stream", (incomingStream) => {
       const streams = store.getState().call.groupCallStreams;
-      const stream = streams.find(stream => stream.id === incomingStream.id);
+      const stream = streams.find((stream) => stream.id === incomingStream.id);
 
       if (!stream) {
         addVideoStream(incomingStream);
@@ -40,7 +49,7 @@ export const createNewGroupCall = () => {
   groupCallHost = true;
   wss.registerGroupCall({
     username: store.getState().dashboard.username,
-    peerId: myPeerId
+    peerId: myPeerId,
   });
 
   store.dispatch(setGroupCallActive(true));
@@ -55,7 +64,7 @@ export const joinGroupCall = (hostSocketId, roomId) => {
     peerId: myPeerId,
     hostSocketId,
     roomId,
-    localStreamId: localStream.id
+    localStreamId: localStream.id,
   });
 
   store.dispatch(setGroupCallActive(true));
@@ -67,9 +76,9 @@ export const connectToNewUser = (data) => {
 
   const call = myPeer.call(data.peerId, localStream);
 
-  call.on('stream', (incomingStream) => {
+  call.on("stream", (incomingStream) => {
     const streams = store.getState().call.groupCallStreams;
-    const stream = streams.find(stream => stream.id === incomingStream.id);
+    const stream = streams.find((stream) => stream.id === incomingStream.id);
 
     if (!stream) {
       addVideoStream(incomingStream);
@@ -80,12 +89,12 @@ export const connectToNewUser = (data) => {
 export const leaveGroupCall = () => {
   if (groupCallHost) {
     wss.groupCallClosedByHost({
-      peerId: myPeerId
+      peerId: myPeerId,
     });
   } else {
     wss.userLeftGroupCall({
       streamId: store.getState().call.localStream.id,
-      roomId: groupCallRoomId
+      roomId: groupCallRoomId,
     });
   }
   clearGroupData();
@@ -104,17 +113,14 @@ export const clearGroupData = () => {
 };
 
 export const removeInactiveStream = (data) => {
-  const groupCallStreams = store.getState().call.groupCallStreams.filter(
-    stream => stream.id !== data.streamId
-  );
+  const groupCallStreams = store
+    .getState()
+    .call.groupCallStreams.filter((stream) => stream.id !== data.streamId);
   store.dispatch(setGroupCallIncomingStreams(groupCallStreams));
 };
 
 const addVideoStream = (incomingStream) => {
-  const groupCallStreams = [
-    ...store.getState().call.groupCallStreams,
-    incomingStream
-  ];
+  const groupCallStreams = [...store.getState().call.groupCallStreams, incomingStream];
 
   store.dispatch(setGroupCallIncomingStreams(groupCallStreams));
 };
