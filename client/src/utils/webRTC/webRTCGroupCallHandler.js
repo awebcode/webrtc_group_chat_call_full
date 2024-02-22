@@ -1,6 +1,6 @@
 import * as wss from "../wssConnection/wssConnection";
 import store from "../../store/store";
-import {Peer}from "peerjs"
+import Peer from "peerjs"
 import {
   setGroupCallActive,
   setCallState,
