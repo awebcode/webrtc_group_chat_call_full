@@ -14,7 +14,7 @@ export const connectWithMyPeer = () => {
  myPeer = new window.Peer(undefined, {
    path: "/peerjs",
    host: "/",
-   port: process.env.NODE_ENV === "production" ? 443: 5000, // Assuming default ports for production and development
+   port: process.env.NODE_ENV === "production" ?typeof window!=="undefined"&& location.port: 5000, // Assuming default ports for production and development
    secure: process.env.NODE_ENV === "production", // Use secure connection in production
  });
 
