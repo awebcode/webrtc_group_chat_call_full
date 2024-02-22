@@ -23,7 +23,7 @@ export const connectWithMyPeer = () => {
     host: "/",
     // port: process.env.NODE_ENV === "production" ? 10000 : 5000, // Assuming default ports for production and development
 
-    port: process.env.NODE_ENV === "production" ? 10000 : 5000,
+    port: process.env.NODE_ENV === "production" ? 443 : 5000,
     pingInterval: 5000,
   });
 

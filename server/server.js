@@ -14,7 +14,6 @@ const server = app.listen(PORT, () => {
 
 const peerServer = ExpressPeerServer(server, {
   debug: true,
-  port: process.env.NODE_ENV === "production" ? 10000 : 5000,
 });
 
 
