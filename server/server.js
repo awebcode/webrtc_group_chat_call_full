@@ -16,16 +16,16 @@ const peerServer = ExpressPeerServer(server, {
   debug: true
 });
 
-app.use('/peerjs', peerServer);
 
 groupCallHandler.createPeerServerListeners(peerServer);
 
 const io = socket(server, {
   cors: {
-    origin: '*',
-    methods: ['GET', 'POST']
-  }
+    origin: ["http://localhost:3000", "https://webrtc-group-call-chat.onrender.com"],
+    methods: ["GET", "POST"],
+  },
 });
+app.use("/peerjs", peerServer);
 
 let peers = [];
 let groupCallRooms = [];
