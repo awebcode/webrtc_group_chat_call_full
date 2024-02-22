@@ -17,7 +17,10 @@ const broadcastEventTypes = {
 let socket;
 
 export const connectWithWebSocket = () => {
-  socket = socketClient(SERVER);
+  socket = socketClient(SERVER, {
+    transports: ["websocket"],
+    
+  });
 
   socket.on("connection", () => {
     console.log("succesfully connected with wss server");
